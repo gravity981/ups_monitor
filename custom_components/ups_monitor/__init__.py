@@ -1,7 +1,7 @@
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN
+from .const import CONF_UPS_TYPE, DOMAIN
 from .coordinator import async_setup_coordinator
 
 PLATFORMS = ["sensor"]
@@ -9,7 +9,7 @@ PLATFORMS = ["sensor"]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = await async_setup_coordinator(hass)
+    hass.data[DOMAIN][entry.entry_id] = await async_setup_coordinator(hass, entry.data[CONF_UPS_TYPE])
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 

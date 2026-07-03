@@ -3,7 +3,9 @@
     "step": {
       "user": {
         "title": "Set up UPS Monitor",
-        "data": {}
+        "data": {
+          "ups_type": "UPS Type"
+        }
       }
     }
   }

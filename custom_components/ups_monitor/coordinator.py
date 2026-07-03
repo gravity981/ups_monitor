@@ -1,8 +1,11 @@
 import logging
+import random
 from datetime import timedelta
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from smbus2 import SMBus
+
+from .const import UPS_TYPE_DUMMY, UPS_TYPE_X1205
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,8 +26,25 @@ class X1205Client:
         }
 
 
-async def async_setup_coordinator(hass):
-    client = X1205Client()
+class DummyClient:
+    def read_all(self):
+        return {
+            "battery": random.randint(0, 100),
+            "voltage": random.randint(3000, 4200),
+            "charging": random.choice([True, False]),
+        }
+
+
+def _create_client(ups_type):
+    if ups_type == UPS_TYPE_DUMMY:
+        return DummyClient()
+    if ups_type == UPS_TYPE_X1205:
+        return X1205Client()
+    raise ValueError(f"Unknown UPS type: {ups_type}")
+
+
+async def async_setup_coordinator(hass, ups_type):
+    client = _create_client(ups_type)
 
     async def _async_update():
         return await hass.async_add_executor_job(client.read_all)
@@ -32,7 +52,7 @@ async def async_setup_coordinator(hass):
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="x1205_ups",
+        name="ups_monitor",
         update_interval=timedelta(seconds=30),
         update_method=_async_update,
     )
