@@ -6,12 +6,14 @@ Python resolves that by calling getattr() on the top-level homeassistant mock
 rather than looking up sys.modules['homeassistant.config_entries'], so we must
 set the attribute explicitly on the homeassistant mock object.
 """
+
 import sys
 from unittest.mock import MagicMock
 
 
 class _ConfigFlow:
     """Absorbs the `domain=` keyword that HA's real metaclass would handle."""
+
     @classmethod
     def __init_subclass__(cls, domain=None, **kwargs):
         super().__init_subclass__(**kwargs)

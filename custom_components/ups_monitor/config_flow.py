@@ -1,28 +1,30 @@
 import logging
 
-import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers.selector import (
     SelectSelector,
     SelectSelectorConfig,
     SelectSelectorMode,
 )
+import voluptuous as vol
 
 from .const import CONF_UPS_TYPE, DOMAIN, UPS_TYPE_DUMMY, UPS_TYPE_X1205
 
 _LOGGER = logging.getLogger(__name__)
 
-_SCHEMA = vol.Schema({
-    vol.Required(CONF_UPS_TYPE, default=UPS_TYPE_X1205): SelectSelector(
-        SelectSelectorConfig(
-            options=[
-                {"value": UPS_TYPE_X1205, "label": "X1205 (I2C)"},
-                {"value": UPS_TYPE_DUMMY, "label": "Dummy (random values)"},
-            ],
-            mode=SelectSelectorMode.LIST,
-        )
-    ),
-})
+_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_UPS_TYPE, default=UPS_TYPE_X1205): SelectSelector(
+            SelectSelectorConfig(
+                options=[
+                    {"value": UPS_TYPE_X1205, "label": "X1205 (I2C)"},
+                    {"value": UPS_TYPE_DUMMY, "label": "Dummy (random values)"},
+                ],
+                mode=SelectSelectorMode.LIST,
+            )
+        ),
+    }
+)
 
 
 class UpsMonitorConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

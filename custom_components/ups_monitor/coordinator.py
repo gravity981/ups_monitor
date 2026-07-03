@@ -1,6 +1,6 @@
+from datetime import timedelta
 import logging
 import random
-from datetime import timedelta
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from smbus2 import SMBus

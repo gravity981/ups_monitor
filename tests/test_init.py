@@ -1,5 +1,6 @@
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
 
 from custom_components.ups_monitor import async_setup_entry, async_unload_entry
 from custom_components.ups_monitor.const import DOMAIN, UPS_TYPE_DUMMY

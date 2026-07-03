@@ -1,16 +1,17 @@
-import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+
+from custom_components.ups_monitor.const import UPS_TYPE_DUMMY, UPS_TYPE_X1205
 from custom_components.ups_monitor.coordinator import (
     DummyClient,
     X1205Client,
     _create_client,
     async_setup_coordinator,
 )
-from custom_components.ups_monitor.const import UPS_TYPE_DUMMY, UPS_TYPE_X1205
-
 
 # --- DummyClient ---
+
 
 def test_dummy_client_returns_required_keys():
     assert set(DummyClient().read_all()) == {"battery", "voltage", "charging"}
@@ -33,6 +34,7 @@ def test_dummy_client_charging_is_bool():
 
 
 # --- X1205Client ---
+
 
 @pytest.fixture
 def mock_bus():
@@ -69,6 +71,7 @@ def test_x1205_client_charging_false_when_flag_clear(mock_bus):
 
 # --- _create_client ---
 
+
 def test_create_client_returns_dummy(mock_bus):
     assert isinstance(_create_client(UPS_TYPE_DUMMY), DummyClient)
 
@@ -84,6 +87,7 @@ def test_create_client_raises_for_unknown_type():
 
 # --- async_setup_coordinator ---
 
+
 @pytest.mark.asyncio
 async def test_coordinator_data_populated_after_first_refresh():
     expected = {"battery": 60, "voltage": 3700, "charging": False}
@@ -98,9 +102,7 @@ async def test_coordinator_data_populated_after_first_refresh():
 @pytest.mark.asyncio
 async def test_coordinator_runs_io_in_executor():
     mock_hass = MagicMock()
-    mock_hass.async_add_executor_job = AsyncMock(
-        return_value={"battery": 50, "voltage": 3600, "charging": True}
-    )
+    mock_hass.async_add_executor_job = AsyncMock(return_value={"battery": 50, "voltage": 3600, "charging": True})
 
     await async_setup_coordinator(mock_hass, UPS_TYPE_DUMMY)
 

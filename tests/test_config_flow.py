@@ -1,5 +1,6 @@
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import MagicMock, AsyncMock
 
 from custom_components.ups_monitor.config_flow import UpsMonitorConfigFlow
 from custom_components.ups_monitor.const import CONF_UPS_TYPE, DOMAIN, UPS_TYPE_DUMMY, UPS_TYPE_X1205

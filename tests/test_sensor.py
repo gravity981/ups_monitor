@@ -1,13 +1,14 @@
-import pytest
 from unittest.mock import MagicMock
 
+import pytest
+
+from custom_components.ups_monitor.const import DOMAIN
 from custom_components.ups_monitor.sensor import (
     X1205Battery,
-    X1205Voltage,
     X1205Charging,
+    X1205Voltage,
     async_setup_entry,
 )
-from custom_components.ups_monitor.const import DOMAIN
 
 
 @pytest.fixture
