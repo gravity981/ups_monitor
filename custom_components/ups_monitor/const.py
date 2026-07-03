@@ -1,0 +1,1 @@
+DOMAIN = "ups_monitor"

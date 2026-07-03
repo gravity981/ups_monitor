@@ -1,0 +1,11 @@
+{
+  "domain": "ups_monitor",
+  "name": "UPS Monitor",
+  "version": "0.0.1",
+  "documentation": "https://github.com/gravity981/ups_monitor",
+  "issue_tracker": "https://github.com/gravity981/ups_monitor/issues",
+  "codeowners": ["@gravity981"],
+  "requirements": ["smbus2==0.4.3"],
+  "iot_class": "local_polling",
+  "config_flow": true
+}
