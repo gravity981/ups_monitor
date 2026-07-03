@@ -1,3 +1,5 @@
+import logging
+
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -8,14 +10,18 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 
+_LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities([
+    entities = [
         X1205Battery(coordinator, entry.entry_id),
         X1205Voltage(coordinator, entry.entry_id),
         X1205Charging(coordinator, entry.entry_id),
-    ])
+    ]
+    _LOGGER.debug("Registering %d sensor entities for entry %s", len(entities), entry.entry_id)
+    async_add_entities(entities)
 
 
 class X1205Battery(CoordinatorEntity, SensorEntity):

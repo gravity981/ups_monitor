@@ -15,27 +15,32 @@ I2C_ADDRESS = 0x36
 
 class X1205Client:
     def __init__(self):
+        _LOGGER.debug("Opening I2C bus %d, address 0x%02x", I2C_BUS, I2C_ADDRESS)
         self.bus = SMBus(I2C_BUS)
 
     def read_all(self):
-        # NOTE: adjust registers based on X1205 docs
-        return {
+        data = {
             "battery": self.bus.read_byte_data(I2C_ADDRESS, 0x04),
             "voltage": self.bus.read_word_data(I2C_ADDRESS, 0x02),
             "charging": bool(self.bus.read_byte_data(I2C_ADDRESS, 0x01) & 0x40),
         }
+        _LOGGER.debug("X1205 raw read: %s", data)
+        return data
 
 
 class DummyClient:
     def read_all(self):
-        return {
+        data = {
             "battery": random.randint(0, 100),
             "voltage": random.randint(3000, 4200),
             "charging": random.choice([True, False]),
         }
+        _LOGGER.debug("Dummy read: %s", data)
+        return data
 
 
 def _create_client(ups_type):
+    _LOGGER.debug("Creating client for UPS type '%s'", ups_type)
     if ups_type == UPS_TYPE_DUMMY:
         return DummyClient()
     if ups_type == UPS_TYPE_X1205:
@@ -47,6 +52,7 @@ async def async_setup_coordinator(hass, ups_type):
     client = _create_client(ups_type)
 
     async def _async_update():
+        _LOGGER.debug("Polling UPS data")
         return await hass.async_add_executor_job(client.read_all)
 
     coordinator = DataUpdateCoordinator(
@@ -57,6 +63,8 @@ async def async_setup_coordinator(hass, ups_type):
         update_method=_async_update,
     )
 
+    _LOGGER.debug("Performing first refresh")
     await coordinator.async_config_entry_first_refresh()
+    _LOGGER.debug("First refresh complete, data: %s", coordinator.data)
 
     return coordinator
